@@ -111,6 +111,7 @@ export class UI {
       <div class="section"><h4>Servidor</h4>
         <div class="row"><input class="input" id="c-url" style="flex:1" value="${esc(localStorage.getItem('ceniza_server') || def)}"></div>
         <p class="muted">Ejecuta <span class="kbd">npm run server</span> en el equipo anfitrión (puerto 8787). Los demás usan <b>ws://IP-del-anfitrión:8787</b>.</p>
+        ${location.protocol === 'https:' ? '<p class="muted" style="color:#ffb35c">Estás jugando la versión web (HTTPS). El navegador no permite conectar desde aquí con un servidor <b>ws://</b>: para el cooperativo, descarga el proyecto y ejecuta <span class="kbd">npm start</span>.</p>' : ''}
       </div>
       <div class="grid g2">
         <div class="section"><h4>Crear sala</h4><p class="muted">Serás el anfitrión: la simulación de la horda se ejecuta en tu equipo.</p><button class="btn primary" data-act="createRoom">Crear sala</button></div>
