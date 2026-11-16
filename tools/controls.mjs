@@ -1,0 +1,46 @@
+import puppeteer from 'puppeteer-core';
+const browser = await puppeteer.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: 'new', args: ['--use-angle=d3d11','--enable-gpu','--ignore-gpu-blocklist'], defaultViewport: { width: 960, height: 540 } });
+const page = await browser.newPage();
+const errs = [];
+page.on('pageerror', e => errs.push(e.message + ' ' + (e.stack||'').split('\n')[1]));
+await page.goto('http://localhost:5173/', { waitUntil: 'networkidle0' });
+await page.evaluate(() => window.__app.startGame({ map: 'estacion', perk: 'demo', difficulty: 'normal', length: 'short' }));
+await new Promise(r=>setTimeout(r,2500));
+const w = (ms) => new Promise(r=>setTimeout(r,ms));
+const ev = (f) => page.evaluate(f);
+await ev(() => { const a=window.__app; a.input.locked=true; a.ui.clear(); a.game.waves.timer=999; });
+const S = () => ev(() => { const g=window.__app.game; const p=g.local; return { pos:[+p.pos.x.toFixed(2), +p.pos.y.toFixed(2), +p.pos.z.toFixed(2)], w:g.weapons.current.def.id, st:g.weapons.state, mag:g.weapons.current.mag, res:g.weapons.current.reserve, gr:g.weapons.grenades, hp:Math.round(p.hp), cr:p.crouching, eye:+p.eye.toFixed(2), proj:g.projectiles.list.length }; });
+console.log('inicio', await S());
+await page.keyboard.down('KeyW'); await w(1000); await page.keyboard.up('KeyW');
+console.log('W 1s', await S());
+await page.keyboard.down('ShiftLeft'); await page.keyboard.down('KeyW'); await w(1000); await page.keyboard.up('KeyW'); await page.keyboard.up('ShiftLeft');
+console.log('sprint 1s', await S());
+await page.keyboard.press('Space'); await w(250);
+console.log('salto', await S()); await w(800);
+await page.keyboard.down('KeyC'); await w(500); console.log('agachado', await S()); await page.keyboard.up('KeyC'); await w(500);
+// disparar petardo
+await ev(() => { const g=window.__app.game; g.input.mouse.left=true; g.input.mouse.leftPressed=true; }); await w(80); await ev(() => { window.__app.game.input.mouse.left=false; });
+console.log('disparo', await S());
+await page.keyboard.press('KeyR'); await w(200); console.log('recargando', await S()); await w(1400); console.log('recargado', await S());
+await page.keyboard.press('KeyG'); await w(700); console.log('granada', await S()); await w(2500);
+await ev(() => { window.__app.game.local.hp = 40; });
+await page.keyboard.press('KeyQ'); await w(900); console.log('curación (40->)', await S());
+await page.keyboard.press('Digit2'); await w(500); console.log('slot2', await S());
+await page.keyboard.press('Digit1'); await w(500); console.log('slot1', await S());
+await page.keyboard.press('KeyT'); await w(500); console.log('soldador', await S());
+// ir a una puerta: alm_s2 (0,14) desde el sur, mirar al norte (yaw=0 -> -z ... norte es +z => yaw=PI)
+await ev(() => { const g=window.__app.game; g.local.pos.set(0,0,12.4); g.local.yaw=Math.PI; g.local.pitch=-0.2; });
+await w(200);
+console.log('puerta', await ev(() => { const g=window.__app.game; const d=g.findDoorInFront(2.6); return d && { id:d.id, closed:d.closed, weld:d.weld }; }));
+await page.keyboard.press('KeyE'); await w(300);
+console.log('tras E', await ev(() => { const d=window.__app.game.world.doors[1]; return { closed:d.closed, weld:d.weld, solid:d.box.solid }; }));
+await ev(() => { window.__app.game.input.mouse.left=true; }); await w(2000); await ev(() => { window.__app.game.input.mouse.left=false; });
+console.log('soldada', await ev(() => { const d=window.__app.game.world.doors[1]; return { closed:d.closed, weld:Math.round(d.weld) }; }));
+await page.keyboard.press('KeyE'); await w(300);
+console.log('E sobre soldada (no debe abrir)', await ev(() => { const d=window.__app.game.world.doors[1]; return { closed:d.closed }; }));
+// intentar atravesar la puerta
+await page.keyboard.down('KeyW'); await w(1200); await page.keyboard.up('KeyW');
+console.log('choque con puerta (z<13.7)', await S());
+await page.screenshot({ path: 'tools/gallery/door.png' });
+console.log('errores', errs);
+await browser.close();
