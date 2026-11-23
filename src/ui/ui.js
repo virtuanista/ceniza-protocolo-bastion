@@ -5,7 +5,7 @@ import { PERKS, PERK_LIST, TALENT_LEVELS, xpForLevel, MAX_LEVEL } from '../game/
 import { MAP_LIST } from '../world/maps.js';
 import { DIFFICULTIES, LENGTHS, ENEMIES } from '../ai/enemyDefs.js';
 import { WEAPONS, WEAPON_LIST, GRENADES, upgradeMult, MAX_UPGRADE } from '../weapons/weaponDefs.js';
-import { saveSys, COSMETICS, CHALLENGES } from '../save/save.js';
+import { saveSys, storage, COSMETICS, CHALLENGES } from '../save/save.js';
 import { audio } from '../audio/audio.js';
 import { bus } from '../core/events.js';
 import { fmtNum, fmtTime } from '../core/utils.js';
@@ -44,7 +44,7 @@ export class UI {
   clear() { this.root.innerHTML = ''; this.screen = null; this.blocking = false; }
 
   // ------------------------------------------------------------------ inicio
-  showMain() {
+  showMain(notice = '') {
     this.screen = 'main'; this.blocking = true;
     const s = saveSys.data;
     const perk = PERKS[s.selected.perk];
@@ -62,6 +62,7 @@ export class UI {
           <button class="btn" data-act="settings">Opciones</button>
           <button class="btn ghost" data-act="howto">Cómo se juega</button>
         </div>
+        ${notice ? `<p class="menu-notice">${esc(notice)}</p>` : ''}
       </div>
       <div style="align-self:end">
         <div class="section" style="max-width:640px;margin-left:auto">
@@ -108,7 +109,7 @@ export class UI {
       <div class="hdr"><h2>Cooperativo <small>hasta 6 jugadores</small></h2><button class="btn ghost small" data-act="main">Volver</button></div>
       <div class="section"><h4>Identidad</h4><div class="row"><span>Nombre</span><input class="input" id="c-name" maxlength="18" value="${esc(saveSys.data.profile.name)}"></div></div>
       <div class="section"><h4>Servidor</h4>
-        <div class="row"><input class="input" id="c-url" style="flex:1" value="${esc(localStorage.getItem('ceniza_server') || def)}"></div>
+        <div class="row"><input class="input" id="c-url" style="flex:1" value="${esc(storage.get('ceniza_server') || def)}"></div>
         <p class="muted">Ejecuta <span class="kbd">npm run server</span> en el equipo anfitrión (puerto 8787). Los demás usan <b>ws://IP-del-anfitrión:8787</b>.</p>
         ${location.protocol === 'https:' ? '<p class="muted" style="color:#ffb35c">Estás jugando la versión web (HTTPS). El navegador no permite conectar desde aquí con un servidor <b>ws://</b>: para el cooperativo, descarga el proyecto y ejecuta <span class="kbd">npm start</span>.</p>' : ''}
       </div>
@@ -461,7 +462,7 @@ export class UI {
         const name = this.root.querySelector('#c-name')?.value.trim();
         if (name) { s.profile.name = name.slice(0, 18); saveSys.save(); }
         const url = this.root.querySelector('#c-url').value.trim();
-        localStorage.setItem('ceniza_server', url);
+        storage.set('ceniza_server', url);
         const code = this.root.querySelector('#c-code')?.value.trim().toUpperCase();
         const msg = this.root.querySelector('#c-msg');
         msg.textContent = 'Conectando...';

@@ -5,6 +5,12 @@ import { DEFAULT_BINDS } from '../core/input.js';
 
 const KEY = 'ceniza_protocolo_save_v1';
 
+// Acceso a localStorage que nunca lanza (iframes con almacenamiento bloqueado, modo privado, cuota llena)
+export const storage = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+};
+
 export const COSMETICS = {
   outfits: [
     { id: 'brigada', name: 'Brigada', sleeve: 0x2a3326, glove: 0x1a1a1a, body: 0x3a4a32, unlocked: true },

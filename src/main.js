@@ -80,8 +80,8 @@ class App {
         audio.music?.start(this.game.world.def.music, 0);
       } catch (e) {
         console.error(e);
-        this.ui.showMain();
-        alert('Error al iniciar la partida: ' + e.message);
+        this._buildMenuBackground();
+        this.ui.showMain('No se pudo iniciar la partida: ' + e.message);
       }
     }, 60);
   }
