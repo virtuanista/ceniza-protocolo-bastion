@@ -82,11 +82,17 @@ export class Input {
   }
 
   lock() {
+    // Sin movimiento sin ajustar (o si el navegador rechaza el bloqueo, p. ej. justo después de
+    // pulsar Esc) se reintenta sin opciones; los rechazos se ignoran: el jugador puede volver a
+    // hacer clic en la pantalla para recuperar el control.
+    const plain = () => {
+      try { const q = this.canvas.requestPointerLock(); if (q && q.catch) q.catch(() => { /* ignorado */ }); } catch (e) { /* ignorado */ }
+    };
     try {
       const p = this.canvas.requestPointerLock({ unadjustedMovement: true });
-      if (p && p.catch) p.catch(() => { try { this.canvas.requestPointerLock(); } catch (e) { /* ignorado */ } });
+      if (p && p.catch) p.catch(plain);
     } catch (e) {
-      try { this.canvas.requestPointerLock(); } catch (e2) { /* ignorado */ }
+      plain();
     }
   }
   unlock() { if (document.pointerLockElement) document.exitPointerLock(); }
