@@ -8,6 +8,16 @@ export const DEFAULT_BINDS = {
   slot4: 'Digit4', slot5: 'Digit5', lastWeapon: 'KeyX', pause: 'Escape', chat: 'Enter',
 };
 
+const SCROLL_KEYS = new Set(['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End']);
+const isTextField = (el) => !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable);
+function scrollMenu(code) {
+  const el = document.querySelector('#ui .screen');
+  if (!el) return;
+  const page = el.clientHeight * 0.85;
+  const dy = { ArrowUp: -60, ArrowDown: 60, PageUp: -page, PageDown: page, Space: page, Home: -el.scrollHeight, End: el.scrollHeight }[code];
+  if (dy) el.scrollBy({ top: dy, behavior: 'smooth' });
+}
+
 export class Input {
   constructor(canvas) {
     this.canvas = canvas;
@@ -26,6 +36,12 @@ export class Input {
     window.addEventListener('keydown', (e) => {
       if (this.textFocus) return;
       if (e.code === 'Tab' || (this.locked && e.code !== 'F11' && e.code !== 'F5' && e.code !== 'F12')) e.preventDefault();
+      else if (SCROLL_KEYS.has(e.code) && !isTextField(e.target) && !(e.code === 'Space' && e.target?.tagName === 'BUTTON')) {
+        // Dentro de un iframe (itch.io) estas teclas harían desplazarse a la página anfitriona:
+        // se bloquean y, en los menús, se desplaza a mano la pantalla activa.
+        e.preventDefault();
+        scrollMenu(e.code);
+      }
       if (!this.keys.has(e.code)) this.pressed.add(e.code);
       this.keys.add(e.code);
     });
