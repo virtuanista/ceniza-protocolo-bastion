@@ -21,9 +21,14 @@ export class NetClient {
     this.connected = false;
   }
   get isHost() { return !!this.lobby && this.lobby.host === this.id; }
+  // El cooperativo necesita el servidor propio (npm start / npm run server) y una conexión ws://, que
+  // los navegadores bloquean en páginas https (itch.io, GitHub Pages) y que no existe abriendo el
+  // archivo directamente. Solo se ofrece cuando el juego se sirve por http (local o red local).
+  available() { return location.protocol === 'http:'; }
   defaultUrl() { return `ws://${location.hostname || 'localhost'}:8787`; }
 
   connect(url) {
+    if (!this.available()) return Promise.reject(new Error('el cooperativo solo está disponible en la versión local'));
     if (this.ws && this.connected && this.url === url) return Promise.resolve();
     if (this.ws) try { this.ws.close(); } catch (e) { /* cerrado */ }
     this.url = url;

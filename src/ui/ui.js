@@ -12,6 +12,7 @@ import { fmtNum, fmtTime } from '../core/utils.js';
 import { PHASE } from '../game/waves.js';
 import { DEFAULT_BINDS, keyName } from '../core/input.js';
 
+const REPO_URL = 'https://github.com/virtuanista/ceniza-protocolo-bastion';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const BIND_NAMES = {
   forward: 'Avanzar', back: 'Retroceder', left: 'Izquierda', right: 'Derecha', jump: 'Saltar', sprint: 'Esprintar', crouch: 'Agacharse', crouchAlt: 'Agacharse (alt.)',
@@ -54,7 +55,7 @@ export class UI {
         <div class="sublogo">Supervivencia cooperativa</div>
         <div class="menu-list">
           <button class="btn primary" data-act="solo">Jugar en solitario</button>
-          <button class="btn" data-act="coop">Cooperativo en línea</button>
+          <button class="btn" data-act="coop">Cooperativo en línea${this.app.net.available() ? '' : ' <small class="btn-tag">versión local</small>'}</button>
           <button class="btn" data-act="perks">Clases y talentos</button>
           <button class="btn" data-act="cosmetics">Apariencia</button>
           <button class="btn" data-act="stats">Estadísticas y desafíos</button>
@@ -104,6 +105,7 @@ export class UI {
   // ------------------------------------------------------------------ cooperativo
   showCoop(msg = '') {
     this.screen = 'coop'; this.blocking = true;
+    if (!this.app.net.available()) return this.showCoopUnavailable();
     const def = this.app.net.defaultUrl();
     this.set(`<div class="wrap" style="max-width:820px">
       <div class="hdr"><h2>Cooperativo <small>hasta 6 jugadores</small></h2><button class="btn ghost small" data-act="main">Volver</button></div>
@@ -111,13 +113,25 @@ export class UI {
       <div class="section"><h4>Servidor</h4>
         <div class="row"><input class="input" id="c-url" style="flex:1" value="${esc(storage.get('ceniza_server') || def)}"></div>
         <p class="muted">Ejecuta <span class="kbd">npm run server</span> en el equipo anfitrión (puerto 8787). Los demás usan <b>ws://IP-del-anfitrión:8787</b>.</p>
-        ${location.protocol === 'https:' ? '<p class="muted" style="color:#ffb35c">Estás jugando la versión web (HTTPS). El navegador no permite conectar desde aquí con un servidor <b>ws://</b>: para el cooperativo, descarga el proyecto y ejecuta <span class="kbd">npm start</span>.</p>' : ''}
       </div>
       <div class="grid g2">
         <div class="section"><h4>Crear sala</h4><p class="muted">Serás el anfitrión: la simulación de la horda se ejecuta en tu equipo.</p><button class="btn primary" data-act="createRoom">Crear sala</button></div>
         <div class="section"><h4>Unirse</h4><div class="row"><input class="input" id="c-code" maxlength="5" placeholder="CÓDIGO" style="width:140px;text-transform:uppercase"><button class="btn" data-act="joinRoom">Unirse</button></div><div id="c-rooms" class="muted" style="margin-top:10px"></div><button class="btn small ghost" data-act="listRooms" style="margin-top:6px">Ver salas abiertas</button></div>
       </div>
       <div class="muted" id="c-msg">${esc(msg)}</div>
+    </div>`);
+  }
+
+  // Versión web (https, p. ej. itch.io o GitHub Pages) o abierta sin servidor: el navegador no puede
+  // conectar con el servidor ws:// local, así que se explica cómo jugar en cooperativo.
+  showCoopUnavailable() {
+    this.set(`<div class="wrap" style="max-width:820px">
+      <div class="hdr"><h2>Cooperativo <small>hasta 6 jugadores</small></h2><button class="btn ghost small" data-act="main">Volver</button></div>
+      <div class="section"><h4>Solo en la versión local</h4>
+        <p class="lore">El cooperativo funciona con un pequeño servidor que se ejecuta en el equipo del anfitrión. Desde esta versión web el navegador no permite conectar con él, así que aquí solo está disponible la partida en solitario.</p>
+        <p class="lore">Para jugar con amigos, descarga el proyecto, ejecuta <span class="kbd">npm install</span> y <span class="kbd">npm start</span>, y abre <b>http://localhost:8787</b>. Los demás se conectan desde <i>Cooperativo en línea</i> con <b>ws://IP-del-anfitrión:8787</b>.</p>
+        <div class="row" style="margin-top:14px"><a class="btn primary" href="${REPO_URL}" target="_blank" rel="noopener noreferrer">Código e instrucciones en GitHub ↗</a><button class="btn ghost" data-act="solo">Jugar en solitario</button></div>
+      </div>
     </div>`);
   }
 
