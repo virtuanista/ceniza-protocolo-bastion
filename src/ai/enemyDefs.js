@@ -65,7 +65,7 @@ export const ENEMIES = {
     resist: { ballistic: 0.95, fire: 0.9, explosive: 0.75, electric: 1, melee: 1 },
     model: { build: 'brute', skin: 0x9a7060, cloth: 0x404040, scale: 1.12, eye: 0xff3010, saw: true, apron: 0x6a6050 },
     voice: { pitch: 85, form: [450, 1000, 2100], rough: 0.85, am: 22, breath: 0.8, drive: 3 },
-    desc: 'Brazos convertidos en sierras. Al perder la mitad de su vida entra en furia y corre. Aturdelo con disparos a la cabeza.',
+    desc: 'Brazos convertidos en sierras. Al perder la mitad de su vida entra en furia y corre. Atúrdelo con disparos a la cabeza.',
   },
   coloso: {
     id: 'coloso', name: 'Coloso', threat: 'Tanque', hp: 1700, headFrac: 0.3, speed: 2.3, runSpeed: 7.4, radius: 0.75, height: 2.5,
