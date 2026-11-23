@@ -377,11 +377,11 @@ export class UI {
       const ammo = d.mag ? tr.ammoCost(inst, true) : null;
       const magC = d.mag ? tr.ammoCost(inst, false) : null;
       const up = tr.upgradeInfo(inst);
-      return `<div class="witem ${d.perk === g.perkId ? 'perk' : ''}">
+      return `<div class="witem inv ${d.perk === g.perkId ? 'perk' : ''}">
         <div><div class="nm">${d.name}${inst.upgrade ? ` <span style="color:var(--accent2)">+${inst.upgrade}</span>` : ''}</div>
-          <div class="meta">${d.mag ? `Munición ${inst.mag + inst.reserve}/${inst.stats.maxAmmo}` : 'Equipo'} · Daño ${Math.round(inst.stats.dmg || inst.stats.proj?.dmg || 0)}${d.weight ? ' · Peso ' + d.weight : ''}</div></div>
+          <div class="meta">${[d.mag ? `Munición ${inst.mag + inst.reserve}/${inst.stats.maxAmmo}` : 'Equipo', Math.round(inst.stats.dmg || inst.stats.proj?.dmg || 0) ? `Daño ${Math.round(inst.stats.dmg || inst.stats.proj?.dmg)}` : '', d.weight ? 'Peso ' + d.weight : ''].filter(Boolean).join(' · ')}</div></div>
         <div class="row" style="justify-content:flex-end">
-          ${d.mag ? `<button class="btn small" data-act="ammo1" data-id="${d.id}" ${magC.amount ? '' : 'disabled'}>Cargador ${magC.cost}₵</button><button class="btn small" data-act="ammoFull" data-id="${d.id}" ${ammo.amount ? '' : 'disabled'}>Llenar ${ammo.cost}₵</button>` : ''}
+          ${d.mag ? (ammo.amount ? `<button class="btn small" data-act="ammo1" data-id="${d.id}" ${magC.amount ? '' : 'disabled'}>Cargador ${magC.cost}₵</button><button class="btn small" data-act="ammoFull" data-id="${d.id}">Llenar ${ammo.cost}₵</button>` : '<button class="btn small ghost" disabled>Munición llena</button>') : ''}
           ${!d.unsellable && up ? `<button class="btn small" data-act="upgrade" data-id="${d.id}" ${p.credits >= up.cost ? '' : 'disabled'}>Mejorar +${up.next} ${up.cost}₵</button>` : ''}
           ${!d.unsellable ? `<button class="btn small ghost" data-act="sell" data-id="${d.id}">Vender ${tr.sellValue(inst)}₵</button>` : ''}
         </div></div>`;
@@ -398,8 +398,8 @@ export class UI {
         </div>
         <div>
           <div class="section"><h4>Supervivencia</h4>
-            <div class="witem"><div><div class="nm">Blindaje</div><div class="meta">${Math.round(p.armor)}/${p.maxArmor} · absorbe el 75% del daño</div></div><button class="btn small" data-act="armor" ${p.armor >= p.maxArmor ? 'disabled' : ''}>Reponer ${tr.armorCost()}₵</button></div>
-            <div class="witem"><div><div class="nm">${w.grenadeDef().name}</div><div class="meta">${w.grenades}/${w.grenadeMax()}</div></div><button class="btn small" data-act="grenade" ${w.grenades >= w.grenadeMax() ? 'disabled' : ''}>Comprar 40₵</button></div>
+            <div class="witem"><div><div class="nm">Blindaje</div><div class="meta">${Math.round(p.armor)}/${p.maxArmor} · absorbe el 75% del daño</div></div>${p.armor >= p.maxArmor ? '<button class="btn small ghost" disabled>Completo</button>' : `<button class="btn small" data-act="armor">Reponer ${tr.armorCost()}₵</button>`}</div>
+            <div class="witem"><div><div class="nm">${w.grenadeDef().name}</div><div class="meta">${w.grenades}/${w.grenadeMax()}</div></div>${w.grenades >= w.grenadeMax() ? '<button class="btn small ghost" disabled>Completo</button>' : '<button class="btn small" data-act="grenade">Comprar 40₵</button>'}</div>
             <button class="btn" style="width:100%;margin-top:6px" data-act="fillAll">Reponer toda la munición</button>
           </div>
           <div class="section"><h4>Mi equipo · Peso ${wt}/${cap}</h4><div class="bar" style="margin-bottom:10px"><i style="width:${wt / cap * 100}%"></i></div><div class="list" style="max-height:calc(100vh - 470px)">${inv}</div></div>

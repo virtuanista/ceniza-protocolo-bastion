@@ -115,6 +115,15 @@ table.stats td:last-child { text-align: right; font-weight: 700; color: var(--ac
 .tab { padding: 6px 12px; background: var(--panel2); border: 1px solid var(--line); cursor: pointer; font-weight: 600; letter-spacing: 1px; font-size: 15px; }
 .tab.on { border-color: var(--accent); color: var(--accent2); }
 .credits-big { font-family: var(--title); font-size: 34px; color: var(--good); }
+/* LONJA en ventanas pequeñas: el equipo apila sus botones bajo el nombre y, si falta altura,
+   las listas dejan de tener barra propia y se desplaza la pantalla entera */
+@media (max-width: 1100px) { .trader .witem.inv { grid-template-columns: 1fr; } .trader .witem.inv .row { justify-content: flex-start !important; } }
+@media (max-height: 760px) {
+  .trader .list { max-height: none !important; overflow: visible; }
+  .screen.overlay .hdr { margin-bottom: 12px; }
+  .screen.overlay .hdr h2 { font-size: 32px; }
+  .screen.overlay .credits-big { font-size: 28px; }
+}
 
 /* ---------------------------------------------------------------- HUD */
 #hud { position: absolute; inset: 0; pointer-events: none; font-weight: 600; }
