@@ -52,6 +52,17 @@ button { font-family: var(--font); }
 .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .g7 { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 @media (max-width: 900px) { .g3, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .menu-main { grid-template-columns: 1fr; padding: 30px; } }
+/* Menú principal en ventanas bajas (p. ej. el embed de 960×600 o 1280×720): todo se escala con la altura */
+.menu-main .sublogo { white-space: nowrap; }
+@media (max-height: 900px) {
+  .menu-main { padding: clamp(18px, 4vh, 60px) clamp(28px, 5vw, 64px); gap: clamp(24px, 3vw, 40px); }
+  .menu-main .logo { font-size: clamp(34px, 8.6vh, 92px); }
+  .menu-main .sublogo { font-size: clamp(13px, 2.2vh, 18px); letter-spacing: clamp(4px, 0.9vh, 8px); margin-top: 0.8vh; }
+  .menu-main .menu-list { margin-top: clamp(12px, 3.2vh, 36px); gap: clamp(4px, 0.9vh, 8px); }
+  .menu-main .btn { font-size: clamp(15px, 2.6vh, 20px); padding: clamp(6px, 1.25vh, 12px) 18px; }
+  .menu-main .lore { font-size: clamp(14px, 2.4vh, 16px); line-height: 1.4; }
+  .menu-main .section { padding: clamp(10px, 2vh, 16px) 18px; }
+}
 .card { background: var(--panel); border: 1px solid var(--line); padding: 14px 16px; cursor: pointer; transition: all 0.12s; position: relative; }
 .card:hover { border-color: rgba(255, 122, 26, 0.5); }
 .card.sel { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset, 0 0 24px rgba(255, 122, 26, 0.18); }
