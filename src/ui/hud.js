@@ -159,7 +159,7 @@ export class HUD {
     div.textContent = `${d.headshot ? '✖ ' : ''}${d.enemy}  +${d.credits}₵`;
     this.el.kf.prepend(div);
     this.killfeed.push({ el: div, t: 4 });
-    while (this.el.kf.children.length > 5) this.el.kf.lastChild.remove();
+    while (this.killfeed.length > 5) this.killfeed.shift().el.remove();
   }
   _hurt(d) {
     if (!this.el || !this.game) return;
@@ -244,6 +244,8 @@ export class HUD {
     if (obj && !obj.done && !obj.failed) { el.od.textContent = `${obj.title}: ${obj.desc}`; el.ob.style.width = clamp(obj.progress / obj.goal, 0, 1) * 100 + '%'; el.ot.textContent = `Tiempo: ${fmtTime(obj.time)} · Recompensa ${obj.reward} ₵`; }
     // mensajes centrales
     if (this.centerT > 0) { this.centerT -= dt; el.center.style.opacity = Math.min(1, this.centerT); } else el.center.style.opacity = 0;
+    // registro de bajas: cada entrada se desvanece a los 4 s
+    for (let i = this.killfeed.length - 1; i >= 0; i--) { const k = this.killfeed[i]; k.t -= dt; if (k.t < 0.5) k.el.style.opacity = Math.max(0, k.t / 0.5); if (k.t <= 0) { k.el.remove(); this.killfeed.splice(i, 1); } }
     // toasts
     for (let i = this.toasts.length - 1; i >= 0; i--) { const t = this.toasts[i]; t.t -= dt; if (t.t < 0.4) t.el.style.opacity = t.t / 0.4; if (t.t <= 0) { t.el.remove(); this.toasts.splice(i, 1); } }
     // impacto
