@@ -729,7 +729,7 @@ export class Game {
       this.app.ui.showResults(this, win, challenges);
     }, win ? 3500 : 2500);
     audio.music?.setIntensity(0);
-    if (win) bus.emit('toast', { text: '¡VICTORIA! La Estación resiste.', kind: 'level' });
+    if (win) bus.emit('toast', { text: '¡VICTORIA! El bastión resiste.', kind: 'level' });
   }
 
   dispose() {
