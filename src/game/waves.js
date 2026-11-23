@@ -6,6 +6,8 @@ import { ENEMIES, waveComposition, LENGTHS } from '../ai/enemyDefs.js';
 import { audio } from '../audio/audio.js';
 import { bus } from '../core/events.js';
 import { pick, rand, weightedPick, shuffle, clamp } from '../core/utils.js';
+import { keyName } from '../core/input.js';
+import { saveSys } from '../save/save.js';
 
 export const PHASE = { PREP: 'prep', WAVE: 'wave', TRADER: 'trader', BOSS: 'boss', VICTORY: 'victory', DEFEAT: 'defeat' };
 
@@ -305,8 +307,8 @@ export class Objective {
     const d = this.data;
     if (this.kind === 'defend') return `Permanece en «${d.name}» ${this.goal} s`;
     if (this.kind === 'holdout') return `Mata ${this.goal} engendros dentro de «${d.name}»`;
-    if (this.kind === 'repair') return `Repara «${d.name}» manteniendo [E]`;
-    return this.carrier ? `Lleva «${d.name}» al punto de entrega` : `Recoge «${d.name}» [E]`;
+    if (this.kind === 'repair') return `Repara «${d.name}» manteniendo [${keyName(saveSys.data.settings.binds.interact)}]`;
+    return this.carrier ? `Lleva «${d.name}» al punto de entrega` : `Recoge «${d.name}» [${keyName(saveSys.data.settings.binds.interact)}]`;
   }
 
   start() {

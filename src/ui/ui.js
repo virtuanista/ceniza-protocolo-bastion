@@ -10,7 +10,7 @@ import { audio } from '../audio/audio.js';
 import { bus } from '../core/events.js';
 import { fmtNum, fmtTime } from '../core/utils.js';
 import { PHASE } from '../game/waves.js';
-import { DEFAULT_BINDS } from '../core/input.js';
+import { DEFAULT_BINDS, keyName } from '../core/input.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const BIND_NAMES = {
@@ -18,7 +18,6 @@ const BIND_NAMES = {
   reload: 'Recargar', interact: 'Interactuar', heal: 'Curación rápida', grenade: 'Granada', melee: 'Golpe rápido', flashlight: 'Linterna', welder: 'Soldador',
   dropCash: 'Soltar créditos', scoreboard: 'Marcador', slot1: 'Cuerpo a cuerpo', slot2: 'Pistolas', slot3: 'Armas principales', slot4: 'Equipo', slot5: 'Ranura 5', lastWeapon: 'Arma anterior', pause: 'Pausa', chat: 'Chat',
 };
-const keyName = (c) => (c || '').replace('Key', '').replace('Digit', '').replace('Left', ' izq.').replace('Right', ' der.').replace('Space', 'Espacio').replace('Escape', 'Esc').replace('Control', 'Ctrl');
 
 export class UI {
   constructor(app, root) {

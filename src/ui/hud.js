@@ -7,6 +7,10 @@ import { PHASE } from '../game/waves.js';
 import { fmtTime, fmtNum, clamp } from '../core/utils.js';
 import { saveSys } from '../save/save.js';
 import { audio } from '../audio/audio.js';
+import { keyName } from '../core/input.js';
+
+// Tecla asignada a una acción, entre corchetes, para avisos y consejos
+const kb = (action) => `[${keyName(saveSys.data.settings.binds[action])}]`;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -87,9 +91,9 @@ export class HUD {
     // consejos para las primeras partidas
     if ((saveSys.data.stats.games || 0) < 3) {
       const tips = [
-        'Sigue la flecha verde hasta la cápsula LONJA y pulsa [E] para comprar equipo',
+        `Sigue la flecha verde hasta la cápsula LONJA y pulsa ${kb('interact')} para comprar equipo`,
         'Las armas de tu clase reciben sus bonificaciones: cómpralas primero',
-        'Con el soldador [T] puedes sellar puertas y crear cuellos de botella',
+        `Con el soldador ${kb('welder')} puedes sellar puertas y crear cuellos de botella`,
         'Pulsa [L] cuando estés listo para empezar la oleada antes de tiempo',
         'Apunta a la cabeza: decapitar mata al instante y evita que la Vesícula reviente',
       ];
@@ -190,7 +194,7 @@ export class HUD {
     el.ar.style.transform = `scaleX(${clamp(p.armor / p.maxArmor, 0, 1)})`;
     el.arv.textContent = Math.ceil(p.armor);
     el.sy.style.transform = `scaleX(${w.syringe / 100})`;
-    el.syv.textContent = w.syringe >= 50 ? '[Q]' : '';
+    el.syv.textContent = w.syringe >= 50 ? kb('heal') : '';
     el.pl.textContent = `Nivel ${g.perkLevel}`;
     // munición
     const inst = w.current;
@@ -201,7 +205,7 @@ export class HUD {
       else if (inst.def.id === 'welder') { const d = w.weldTarget; el.mag.textContent = d ? Math.round(d.weldPct * 100) + '%' : '—'; el.res.textContent = d ? (d.destroyed ? 'reparando ' + Math.round(d.repair) + '%' : d.name) : ''; el.mag.style.color = ''; }
       else { el.mag.textContent = '∞'; el.res.textContent = ''; el.mag.style.color = ''; }
     }
-    el.gr.textContent = `● ${w.grenades} [G]`;
+    el.gr.textContent = `● ${w.grenades} ${kb('grenade')}`;
     el.wt2.textContent = `Peso ${w.totalWeight()}/${w.carryCap()}`;
     // créditos
     if (this.creditDeltaT > 0) { this.creditDeltaT -= dt; if (this.creditDeltaT <= 0) this.creditDelta = 0; }
@@ -284,11 +288,11 @@ export class HUD {
     else {
       const waves = g.waves;
       const pod = waves.activePod;
-      if (pod && (waves.phase === PHASE.TRADER || waves.phase === PHASE.PREP) && p.pos.distanceTo(pod.pos) < 3.2) txt = '[E] Abrir comerciante «LONJA»';
+      if (pod && (waves.phase === PHASE.TRADER || waves.phase === PHASE.PREP) && p.pos.distanceTo(pod.pos) < 3.2) txt = `${kb('interact')} Abrir comerciante «LONJA»`;
       else {
         const obj = g.objective();
         if (obj && obj.kind === 'repair' && p.pos.distanceTo(obj.pos) < 2) txt = '[Mantén E] Reparar dispositivo';
-        else if (obj && obj.kind === 'carry' && !obj.carrier && p.pos.distanceTo(obj.itemPos) < 2) txt = '[E] Recoger ' + obj.data.name;
+        else if (obj && obj.kind === 'carry' && !obj.carrier && p.pos.distanceTo(obj.itemPos) < 2) txt = `${kb('interact')} Recoger ` + obj.data.name;
         else {
           const downed = [...g.remote.values()].find((r) => r.downed && r.pos.distanceTo(p.pos) < 2);
           if (downed) txt = `[Mantén E] Reanimar a ${downed.name}`;
@@ -296,9 +300,9 @@ export class HUD {
             const door = g.findDoorInFront(2.6);
             if (door) {
               if (g.weapons.current?.def.id === 'welder') txt = door.destroyed ? `[Clic] Reparar puerta (${Math.round(door.repair)}%)` : `[Clic] Soldar · [Clic der.] Desoldar · ${Math.round(door.weldPct * 100)}%`;
-              else if (door.destroyed) txt = 'Puerta destruida — repárala con el soldador [T]';
+              else if (door.destroyed) txt = `Puerta destruida — repárala con el soldador ${kb('welder')}`;
               else if (door.weld > 0) txt = `Puerta soldada ${Math.round(door.weldPct * 100)}%`;
-              else txt = door.closed ? '[E] Abrir puerta · [T] Soldador' : '[E] Cerrar puerta';
+              else txt = door.closed ? `${kb('interact')} Abrir puerta · ${kb('welder')} Soldador` : `${kb('interact')} Cerrar puerta`;
             } else if (g.weapons.current?.def.id === 'syringe') txt = '[Clic] Curar compañero · [Clic der.] Curarte';
           }
         }

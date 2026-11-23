@@ -18,6 +18,9 @@ function scrollMenu(code) {
   if (dy) el.scrollBy({ top: dy, behavior: 'smooth' });
 }
 
+// Nombre legible de una tecla (código KeyboardEvent.code) para menús y avisos
+export const keyName = (c) => (c || '').replace('Key', '').replace('Digit', '').replace('Left', ' izq.').replace('Right', ' der.').replace('Space', 'Espacio').replace('Escape', 'Esc').replace('Control', 'Ctrl');
+
 export class Input {
   constructor(canvas) {
     this.canvas = canvas;
