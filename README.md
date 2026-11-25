@@ -1,3 +1,5 @@
+<p align="center"><b>Español</b> · <a href="README.en.md">English</a></p>
+
 <div align="center">
 
 # CENIZA: Protocolo Bastión
@@ -160,13 +162,6 @@ Necesitan Google Chrome instalado (usan `puppeteer-core`).
 Código, arte, sonido y música originales, publicados con licencia [MIT](LICENSE).
 
 Librerías: [three.js](https://threejs.org) (MIT), [ws](https://github.com/websockets/ws) (MIT), [Vite](https://vitejs.dev) (MIT) y puppeteer-core (Apache-2.0, solo para las pruebas). Fuentes Rajdhani y Oswald (SIL Open Font License).
-
-<details>
-<summary><b>In English</b></summary>
-
-*CENIZA: Protocolo Bastión* is a first-person wave-survival shooter for the browser with online co-op for up to 6 players. Every texture, model, sound effect and music track is generated procedurally at runtime with three.js and Web Audio. [Play the single-player version in your browser](https://virtuanista.github.io/ceniza-protocolo-bastion/), or clone the repo and run `npm install && npm start` to play co-op locally.
-
-</details>
 
 <p align="center">
 	Repositorio generado por <a href="https://github.com/virtuanista" target="_blank">virtu 🎣</a>
