@@ -167,3 +167,19 @@ Librerías: [three.js](https://threejs.org) (MIT), [ws](https://github.com/webso
 *CENIZA: Protocolo Bastión* is a first-person wave-survival shooter for the browser with online co-op for up to 6 players. Every texture, model, sound effect and music track is generated procedurally at runtime with three.js and Web Audio. [Play the single-player version in your browser](https://virtuanista.github.io/ceniza-protocolo-bastion/), or clone the repo and run `npm install && npm start` to play co-op locally.
 
 </details>
+
+<p align="center">
+	Repositorio generado por <a href="https://github.com/virtuanista" target="_blank">virtu 🎣</a>
+</p>
+
+<p align="center">
+	<img src="https://open.soniditos.com/cat_footer.svg" alt="Gatito" />
+</p>
+
+<p align="center">
+	Copyright &copy; 2026
+</p>
+
+<p align="center">
+	<a href="LICENSE"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=d9e0ee&colorA=363a4f&colorB=b7bdf8" alt="Licencia MIT" /></a>
+</p>
